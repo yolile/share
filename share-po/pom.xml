@@ -8,7 +8,11 @@
         <version>6.0.0-SNAPSHOT</version>
     </parent>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
+        <dependency.share.version>6.0.0-rc1</dependency.share.version>
+        <dependency.alfresco-repository.version>6.0.0-RC4</dependency.alfresco-repository.version>
+        <dependency.postgresql.version>9.4.1212</dependency.postgresql.version>
+        <acs-packaging-version>6.0.0-RC3</acs-packaging-version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <testng.xml>src/test/resources/testng.xml</testng.xml>
         <test.exclude>nonEnterprise</test.exclude>
@@ -17,7 +21,11 @@
         <argLine>-Xms512m -Xmx1024m</argLine>
         <skipTests>true</skipTests>
         <spring.version>5.0.4.RELEASE</spring.version>
+        <maven.fabric8.version>0.25.0</maven.fabric8.version>
+        <dependency.alfresco-server-root.version>6.0</dependency.alfresco-server-root.version>
+        <share-packaging-artifactId>share</share-packaging-artifactId>
     </properties>
+
     <repositories>
         <repository>
             <id>alfresco-public-snapshots</id>
@@ -210,99 +218,189 @@
 		          	</execution>
 		        </executions>
 		    </plugin> -->
-            <plugin>
-                <!-- Configuration triggered by mvn antrun:run, used by Bamboo to stop server -->
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-cli</id>
-                        <configuration>
-                            <target>
-                                <echo>Stopping Alfresco...</echo>
-                                <exec executable="${basedir}/target/alf-installation/alfresco.sh" dir="target/alf-installation" failonerror="true">
-                                    <arg value="stop" />
-                                </exec>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
         </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>install-alfresco</id>
+            <id>run-alfresco</id>
             <build>
                 <plugins>
-                    <!-- Download and install the latest enterprise alfresco installer -->
                     <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${maven.fabric8.version}</version>
+                        <extensions>true</extensions>
+
+                        <configuration>
+                            <images>
+                                <image>
+                                    <alias>test-database</alias>
+                                    <name>postgres:9.4.12</name>
+                                    <run>
+                                        <ports>
+                                            <port>database.port:5432</port>
+                                        </ports>
+                                        <env>
+                                            <POSTGRES_PASSWORD>alfresco</POSTGRES_PASSWORD>
+                                            <POSTGRES_USER>alfresco</POSTGRES_USER>
+                                            <POSTGRES_DB>alfresco-saml-module</POSTGRES_DB>
+                                        </env>
+                                        <cmd>
+                                            <shell>-c max_connections=300</shell>
+                                        </cmd>
+                                        <wait>
+                                            <log>database system is ready to accept connections</log>
+                                            <time>20000</time>
+                                        </wait>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>fetch-installer</id>
-                                <phase>generate-test-resources</phase>
+                                <id>start</id>
+                                <phase>pre-integration-test</phase>
                                 <goals>
-                                  <goal>run</goal>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-tomcat-resources</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
-                                        <taskdef resource="net/sf/antcontrib/antlib.xml" />
-
-                                        <echo>Recreating database...</echo>
-                                        <sql driver="org.postgresql.Driver" url="jdbc:postgresql:template1" userid="alfresco" password="alfresco" autocommit="true">drop database if exists alfresco; create database alfresco</sql>
-                                        <if>
-                                            <not> <isset property="installer.location" /> </not>
-                                            <then>
-                                                <property name="installer.location" location="${basedir}/target/alf-installer.bin" />
-                                                <echo>Downloading Alfresco installer to ${installer.location}...</echo>
-                                                <sshexec username="tomcat" host="pbam01.alfresco.com" keyfile="${user.home}/.ssh/id_rsa" outputproperty="installerPath" command="ls -rt /data/bamboo/artifacts/${enterprise.build.plan}/ALL/alfresco-*-linux-x64.??? | tail -1 | tr ' ' '?' " />
-                                                <scp file="tomcat@pbam01.alfresco.com:${installerPath}" localTofile="${installer.location}" keyfile="${user.home}/.ssh/id_rsa" />
-                                            </then>
-                                        </if>
-                                        <chmod file="${installer.location}" perm="a+x" verbose="true" />
-                                        <echo>Installing Alfresco...</echo>
-                                        <exec executable="${installer.location}" dir="target" failonerror="true">
-                                            <arg line="--mode unattended --alfresco_admin_password admin --disable-components postgres,alfrescowcmqs --jdbc_username alfresco --jdbc_password alfresco --prefix ${basedir}/target/alf-installation --tomcat_server_domain ${HOSTNAME}" />
-                                        </exec>
-                                    </target>
+                                    <outputDirectory>${project.build.directory}/contexts</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>tomcat</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
                                 </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+
+                    <!-- Run Tomcat 7 embedded with Alfresco.war and Share.war contexts.
+                    The solr4.war is fetched directly from the Maven repo, it is not built like
+                    the other WARs. Plugin version is picked up from alfresco-sdk-parent.pom
+                    pluginManagement definition, which also brings in the H2 database lib -->
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
                         <dependencies>
-                            <dependency>
-                                <groupId>org.apache.ant</groupId>
-                                <artifactId>ant-jsch</artifactId>
-                                <version>1.8.2</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>ant-contrib</groupId>
-                                <artifactId>ant-contrib</artifactId>
-                                <version>1.0b3</version>
-                                <exclusions>
-                                    <exclusion>
-                                        <groupId>ant</groupId>
-                                        <artifactId>ant</artifactId>
-                                    </exclusion>
-                                </exclusions>
-                            </dependency>
                             <dependency>
                                 <groupId>org.postgresql</groupId>
                                 <artifactId>postgresql</artifactId>
                                 <version>${dependency.postgresql.version}</version>
                             </dependency>
+                            <dependency>
+                                <groupId>org.alfresco</groupId>
+                                <artifactId>alfresco-repository</artifactId>
+                                <version>${dependency.alfresco-repository.version}</version>
+                            </dependency>
                         </dependencies>
+                        <configuration>
+                            <!-- Make sure Catalina classes are picked up when we got virtual
+                                webapp contexts with classpaths -->
+                            <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
+                            <path>/info</path>
+                            <systemProperties>
+                                <db.name>alfresco-share</db.name>
+                                <db.driver>org.postgresql.Driver</db.driver>
+                                <db.url>jdbc:postgresql://localhost:5432/alfresco-share</db.url>
+                                <dir.root>${project.build.directory}/alf-data</dir.root>
+                            </systemProperties>
+                            <!-- Should this class loader delegate to the parent class loader
+                                before searching its own repositories (i.e. the usual Java2 delegation model) -->
+                            <!-- Prevent parent classloader delegation, each webapp loads. If
+                                set to true then you will get a truckload of Solr logging as the alf_data_dev/solr4/config/log4j-solr.properties
+                                file is not picked up. This also fixes issues with the Google Guava Library,
+                                which this tomcat plugin uses version 10.0.1 of but Solr uses 14.0.1 -->
+                            <delegate>false</delegate>
+                            <webapps>
+                                <!--<webapp>-->
+                                    <!--<groupId>org.alfresco.saml</groupId>-->
+                                    <!--<artifactId>alfresco</artifactId>-->
+                                    <!--<version>${project.version}</version>-->
+                                    <!--<type>war</type>-->
+                                    <!--&lt;!&ndash; Make sure webapp is loaded with context and everything, if-->
+                                        <!--set to 'false' then you will get 404 when trying to access the webapp from-->
+                                        <!--browser &ndash;&gt;-->
+                                    <!--<asWebapp>true</asWebapp>-->
+                                    <!--<contextPath>/alfresco</contextPath>-->
+                                    <!--<contextFile>${project.build.directory}/contexts/context-repo.xml</contextFile>-->
+                                <!--</webapp>-->
+                                <!--  webapp>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-solr4</artifactId>
+                                    <version>${alfresco-solr4-version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                    <contextPath>/solr4</contextPath>
+                                    <contextFile>${project.build.directory}/contexts/context-solr.xml</contextFile>
+                                </webapp-->
+                                <webapp>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-server-root</artifactId>
+                                    <version>${dependency.alfresco-server-root.version}</version>
+                                    <contextPath>/</contextPath>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                    <!-- Workaround for https://issues.apache.org/jira/browse/MTOMCAT-269 -->
+                                    <!-- tomcat7-maven-plugin does not pick up the context.xml file
+                                        from META-INF -->
+                                    <contextFile>${project.build.directory}/tomcat/webapps/alfresco-server-root/META-INF/context.xml</contextFile>
+                                </webapp>
+                                <!--  webapp>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-vti-bin</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                    <contextPath>/_vti_bin</contextPath>
+                                    <contextFile>${runtime.tomcat.conf.folder}/vtibin-context.xml</contextFile>
+                                </webapp-->
+                                <webapp>
+                                    <groupId>org.alfresco.saml</groupId>
+                                    <artifactId>share</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                    <contextPath>/share</contextPath>
+                                    <contextFile>${project.build.directory}/contexts/context-share.xml</contextFile>
+                                </webapp>
+                            </webapps>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>run-wars</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>pre-integration-test</phase>
+                            </execution>
+                        </executions>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-
-        <profile>
-            <id>run-alfresco</id>
-            <build>
-                <plugins>
-                    <!-- Fetch JaCoCo agent and set the argLine property accordingly -->
+                    <!--Fetch JaCoCo agent and set the argLine property accordingly-->
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
@@ -322,13 +420,17 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
+            </profile>
+
         <profile>
             <id>alfresco-one-tests</id>
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.18.1</version>
+
                         <configuration>
                             <suiteXmlFiles>
                             	<suiteXmlFile>src/test/resources/SearchSuite.xml</suiteXmlFile>
@@ -361,7 +463,37 @@
                             <!--<webdrone.element.wait.time>${webdrone.element.wait.time}</webdrone.element.wait.time>-->
                             <!--</systemPropertyVariables>-->
                             <redirectTestOutputToFile>false</redirectTestOutputToFile>
+
+                        <testClassesDirectory>${project.build.directory}/testng-resources</testClassesDirectory>
+                        <systemPropertyVariables>
+                            <!-- Where is the Alfresco Share Webapp that we are testing -->
+                            <share.target>${share.client.url}</share.target>
+                        </systemPropertyVariables>
+
+                        <!-- The out-of-the-box Alfresco Share PO test classes does not follow
+                            the *IT.java naming convention, they use *Test.java, so need to add that -->
+                        <includes>
+                            <include>**/*Test.java</include>
+                        </includes>
                         </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>regression-tests</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify-tests</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
                     </plugin>
                 </plugins>
             </build>

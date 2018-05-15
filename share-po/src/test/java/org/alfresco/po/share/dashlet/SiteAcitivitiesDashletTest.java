@@ -153,7 +153,7 @@ public class SiteAcitivitiesDashletTest extends AbstractSiteDashletTest
         DocumentDetailsPage page = null;
         // This dashlet should not take over a minute to display activity list.
         RenderTime timer = new RenderTime(60000);
-        SiteActivitiesDashlet dashlet;
+        SiteActivitiesDashlet dashlet = new SiteActivitiesDashlet();
         while (true)
         {
             timer.start();
