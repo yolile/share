@@ -345,7 +345,7 @@
                                     <!-- Workaround for https://issues.apache.org/jira/browse/MTOMCAT-269 -->
                                     <!-- tomcat7-maven-plugin does not pick up the context.xml file
                                         from META-INF -->
-                                    <contextFile>${project.build.directory}/tomcat/webapps/alfresco-server-root/META-INF/context.xml</contextFile>
+                                    <!--<contextFile>${project.build.directory}/tomcat/webapps/alfresco-server-root/META-INF/context.xml</contextFile>-->
                                 </webapp>
                                 <webapp>
                                     <groupId>org.alfresco</groupId>
@@ -354,7 +354,7 @@
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
                                     <contextPath>/share</contextPath>
-                                    <contextFile>${project.build.directory}/contexts/context-share.xml</contextFile>
+                                    <!--<contextFile>${project.build.directory}/contexts/context-share.xml</contextFile>-->
                                 </webapp>
                             </webapps>
                         </configuration>
@@ -554,7 +554,7 @@
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-failsafe-plugin-plugin</artifactId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
                         	<skipTests>false</skipTests>
                             <suiteXmlFiles>
