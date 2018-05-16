@@ -338,7 +338,7 @@
                                     <contextFile>${project.build.directory}/tomcat/webapps/alfresco-server-root/META-INF/context.xml</contextFile>
                                 </webapp>
                                 <webapp>
-                                    <groupId>org.alfresco.saml</groupId>
+                                    <groupId>org.alfresco.share</groupId>
                                     <artifactId>share</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
