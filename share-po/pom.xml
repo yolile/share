@@ -471,7 +471,7 @@
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
                             <skipTests>false</skipTests>
                             <suiteXmlFiles>
@@ -554,7 +554,7 @@
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>     
+                        <artifactId>maven-failsafe-plugin-plugin</artifactId>
                         <configuration>
                         	<skipTests>false</skipTests>
                             <suiteXmlFiles>
