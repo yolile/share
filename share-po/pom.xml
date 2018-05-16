@@ -10,9 +10,9 @@
     <properties>
         <!--<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
         <dependency.share.version>6.0.0-rc1</dependency.share.version>
-        <dependency.alfresco-repository.version>6.0.0-RC4</dependency.alfresco-repository.version>
+        <dependency.alfresco-repository.version>6.46</dependency.alfresco-repository.version>
         <dependency.postgresql.version>9.4.1212</dependency.postgresql.version>
-        <acs-packaging-version>6.0.0-RC3</acs-packaging-version>
+        <acs-packaging-version>6.0.0-RC4</acs-packaging-version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <testng.xml>src/test/resources/testng.xml</testng.xml>
         <test.exclude>nonEnterprise</test.exclude>
@@ -206,18 +206,6 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
-<!--             <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-jar-plugin</artifactId>
-		        <version>2.6</version>
-		        <executions>
-		            <execution>
-		                <goals>
-		                    <goal>test-jar</goal>
-		            	</goals>
-		          	</execution>
-		        </executions>
-		    </plugin> -->
 
         </plugins>
     </build>
@@ -337,27 +325,6 @@
                                 which this tomcat plugin uses version 10.0.1 of but Solr uses 14.0.1 -->
                             <delegate>false</delegate>
                             <webapps>
-                                <!--<webapp>-->
-                                    <!--<groupId>org.alfresco.saml</groupId>-->
-                                    <!--<artifactId>alfresco</artifactId>-->
-                                    <!--<version>${project.version}</version>-->
-                                    <!--<type>war</type>-->
-                                    <!--&lt;!&ndash; Make sure webapp is loaded with context and everything, if-->
-                                        <!--set to 'false' then you will get 404 when trying to access the webapp from-->
-                                        <!--browser &ndash;&gt;-->
-                                    <!--<asWebapp>true</asWebapp>-->
-                                    <!--<contextPath>/alfresco</contextPath>-->
-                                    <!--<contextFile>${project.build.directory}/contexts/context-repo.xml</contextFile>-->
-                                <!--</webapp>-->
-                                <!--  webapp>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-solr4</artifactId>
-                                    <version>${alfresco-solr4-version}</version>
-                                    <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                    <contextPath>/solr4</contextPath>
-                                    <contextFile>${project.build.directory}/contexts/context-solr.xml</contextFile>
-                                </webapp-->
                                 <webapp>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-server-root</artifactId>
@@ -370,15 +337,6 @@
                                         from META-INF -->
                                     <contextFile>${project.build.directory}/tomcat/webapps/alfresco-server-root/META-INF/context.xml</contextFile>
                                 </webapp>
-                                <!--  webapp>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-vti-bin</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                    <contextPath>/_vti_bin</contextPath>
-                                    <contextFile>${runtime.tomcat.conf.folder}/vtibin-context.xml</contextFile>
-                                </webapp-->
                                 <webapp>
                                     <groupId>org.alfresco.saml</groupId>
                                     <artifactId>share</artifactId>
