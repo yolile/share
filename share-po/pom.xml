@@ -38,7 +38,8 @@
                 <checksumPolicy>fail</checksumPolicy>
              </snapshots>
              <name>Alfresco Public Snapshots Repository</name>
-             <url>https://artifacts.alfresco.com/nexus/content/repositories/public-snapshots/</url>
+             <!--<url>https://artifacts.alfresco.com/nexus/content/repositories/public-snapshots/</url>-->
+            <url> https://artifacts.alfresco.com/nexus/content/repositories/snapshots/org/alfresco/share/</url>
         </repository>
     </repositories>
     <dependencies>
@@ -170,9 +171,18 @@
             <version>1.4.01</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>share</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+
     </dependencies>
     
-    <!-- Package Application into a standalone  -->
+    <!-- Package Application into a standalone
+   -->
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
@@ -338,7 +348,7 @@
                                     <contextFile>${project.build.directory}/tomcat/webapps/alfresco-server-root/META-INF/context.xml</contextFile>
                                 </webapp>
                                 <webapp>
-                                    <groupId>org.alfresco.share</groupId>
+                                    <groupId>org.alfresco</groupId>
                                     <artifactId>share</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
