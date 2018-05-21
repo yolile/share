@@ -44,6 +44,11 @@
     </repositories>
     <dependencies>
         <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.10.0-alfresco-patched</version>
+        </dependency>
+        <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>selenium-grid</artifactId>
             <version>1.8</version>
@@ -77,10 +82,10 @@
                     <groupId>commons-beanutils</groupId>
                     <artifactId>commons-beanutils-core</artifactId>
                 </exclusion>
-		      <exclusion>
-                    <artifactId>xercesImpl</artifactId>
-                    <groupId>xerces</groupId>
-                </exclusion>
+		      <!--<exclusion>-->
+                    <!--<artifactId>xercesImpl</artifactId>-->
+                    <!--<groupId>xerces</groupId>-->
+                <!--</exclusion>-->
                 <exclusion>
                     <groupId>batik</groupId>
                     <artifactId>batik-util</artifactId>
