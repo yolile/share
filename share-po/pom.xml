@@ -528,28 +528,28 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>     
-                        <executions>
-                            <execution>
-                                <id>change-aikau</id>
-                                <phase>process-test-resources</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target>
-                                        <echo>Tweaking Aikau in share.war...</echo>
-                                        <zip destfile="${basedir}/target/share.war">
-                                            <zipfileset src="${basedir}/target/alf-installation/tomcat/webapps/share.war" excludes="WEB-INF/lib/aikau-*.jar" />
-                                            <zipfileset dir="${basedir}/target" includes="aikau-*.jar" prefix="WEB-INF/lib" />
-                                        </zip>
-                                        <move file="${basedir}/target/share.war" todir="${basedir}/target/alf-installation/tomcat/webapps" verbose="true" />
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+                    <!--<plugin>-->
+                        <!--<artifactId>maven-antrun-plugin</artifactId>     -->
+                        <!--<executions>-->
+                            <!--<execution>-->
+                                <!--<id>change-aikau</id>-->
+                                <!--<phase>process-test-resources</phase>-->
+                                <!--<goals>-->
+                                    <!--<goal>run</goal>-->
+                                <!--</goals>-->
+                                <!--&lt;!&ndash;<configuration>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<target>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<echo>Tweaking Aikau in share.war...</echo>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<zip destfile="${basedir}/target/share.war">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<zipfileset src="${basedir}/target/alf-installation/tomcat/webapps/share.war" excludes="WEB-INF/lib/aikau-*.jar" />&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<zipfileset dir="${basedir}/target" includes="aikau-*.jar" prefix="WEB-INF/lib" />&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</zip>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<move file="${basedir}/target/share.war" todir="${basedir}/target/alf-installation/tomcat/webapps" verbose="true" />&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</target>&ndash;&gt;-->
+                                <!--&lt;!&ndash;</configuration>&ndash;&gt;-->
+                            <!--</execution>-->
+                        <!--</executions>-->
+                    <!--</plugin>-->
                 </plugins>
             </build>
         </profile>
