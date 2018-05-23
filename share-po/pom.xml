@@ -359,7 +359,7 @@
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
                                     <contextPath>/share</contextPath>
-                                    <contextFile>${project.build.directory}/contexts/context-share.xml</contextFile>
+                                    <contextFile>${runtime.tomcat.conf.folder}/share-context.xml</contextFile>
                                 </webapp>
                             </webapps>
                         </configuration>
