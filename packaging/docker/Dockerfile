@@ -1,4 +1,4 @@
-FROM quay.io/alfresco/alfresco-base-tomcat:0.1.0
+FROM quay.io/alfresco/alfresco-base-tomcat:8.5.34-java-11-openjdk-centos-7-featurerepo-4016_pod_tls
 
 RUN mkdir -p /usr/local/tomcat/shared/classes/alfresco/web-extension
 RUN mkdir -p /usr/local/tomcat/amps_share
