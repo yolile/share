@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- Create a property placeholder configurer so that properties can be substituted from a .properties file.
          Note that the prefix must be altered from the default to avoid wrongly substituting a property value
@@ -169,7 +170,7 @@
 
     <!-- SURF: interoperability with annotated controllers -->
     <!-- Enables annotated @Controllers; responsible for invoking an annotated POJO @Controller when one is mapped. -->
-    <bean id="annotationMethodHandlerAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+    <bean id="annotationMethodHandlerAdapter" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>
     
     <!-- SURF: interoperability with simple controllers -->
     <!-- Support for Default Surf Controllers --> 
