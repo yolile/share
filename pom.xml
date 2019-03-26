@@ -50,6 +50,8 @@
         <dependency.webscripts.version>6.18</dependency.webscripts.version>
         <dependency.surf.version>6.11</dependency.surf.version>
         <dependency.alfresco-sdk.version>2.0.0</dependency.alfresco-sdk.version>
+        <dependency.alfresco-repository.version>6.56.5</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>6.39.2</dependency.alfresco-remote-api.version>
 
         <!-- Developer's runtime environment configuration -->
         <runtime.parent.folder>${basedir}/..</runtime.parent.folder>
