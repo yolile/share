@@ -1,0 +1,19 @@
+<extension>
+   <modules>
+      <module>
+         <id>Alfresco :: Identity Service - Login Redirect</id>
+         <version>${project.version}</version>
+         <auto-deploy>true</auto-deploy>
+         <customizations>
+            <customization>
+               <targetPackageRoot>
+                  org.alfresco.components.guest
+               </targetPackageRoot>
+               <sourcePackageRoot>
+                  org.alfresco.components.identityservice.guest
+               </sourcePackageRoot>
+            </customization>
+         </customizations>
+      </module>
+   </modules>
+</extension>

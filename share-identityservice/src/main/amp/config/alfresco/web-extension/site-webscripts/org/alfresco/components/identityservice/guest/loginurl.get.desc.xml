@@ -1,0 +1,9 @@
+<webscript>
+   <shortname>Identity Service Login GET</shortname>
+   <description>Gets the login URL for Identity Service</description>
+   <family>Share</family>
+   <!--<authentication>guest</authentication>-->
+   <url>/identity-service/loginurl</url>
+   <format default="json" />
+   <lifecycle>internal</lifecycle>
+</webscript>
