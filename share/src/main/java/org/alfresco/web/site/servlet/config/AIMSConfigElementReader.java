@@ -33,7 +33,7 @@ import org.springframework.extensions.config.xml.elementreader.ConfigElementRead
  * Responsible for loading Identity Service configuration settings from the share-config*.xml files that are loaded via the
  * configuration service.
  *
- * @author dward
+ * @author bgabor
  */
 public class AIMSConfigElementReader implements ConfigElementReader
 {

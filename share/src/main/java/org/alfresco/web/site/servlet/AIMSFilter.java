@@ -91,9 +91,9 @@ public class AIMSFilter extends KeycloakOIDCFilter
     }
 
     /**
-     * @param sreq
-     * @param sres
-     * @param chain
+     * @param sreq Servlet Request
+     * @param sres Servlet Response
+     * @param chain Filter Chain
      * @throws IOException
      * @throws ServletException
      */
@@ -107,8 +107,9 @@ public class AIMSFilter extends KeycloakOIDCFilter
         {
             super.doFilter(sreq, sres, chain);
 
-            RefreshableKeycloakSecurityContext context = (RefreshableKeycloakSecurityContext) request
-                .getAttribute(KeycloakSecurityContext.class.getName());
+            RefreshableKeycloakSecurityContext context =
+                (RefreshableKeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+
             if (context != null)
             {
                 this.onSuccess(request, response, session, context);
@@ -127,15 +128,18 @@ public class AIMSFilter extends KeycloakOIDCFilter
      */
     private boolean isLoggedOutFromKeycloak(HttpSession session)
     {
-        OIDCFilterSessionStore.SerializableKeycloakAccount account = (OIDCFilterSessionStore.SerializableKeycloakAccount) session
-            .getAttribute(KeycloakAccount.class.getName());
+        OIDCFilterSessionStore.SerializableKeycloakAccount account =
+            (OIDCFilterSessionStore.SerializableKeycloakAccount) session.getAttribute(KeycloakAccount.class.getName());
+
         if (account != null)
         {
             RefreshableKeycloakSecurityContext context = account.getKeycloakSecurityContext();
+
             if (context != null)
             {
                 return !context.refreshExpiredToken(false);
             }
+
             return true;
         }
 
@@ -143,10 +147,10 @@ public class AIMSFilter extends KeycloakOIDCFilter
     }
 
     /**
-     * @param request
-     * @param response
-     * @param session
-     * @param context
+     * @param request HTTP Servlet Request
+     * @param response HTTP Servlet Response
+     * @param session HTTP Session
+     * @param context Refreshable Keycloak Security Context
      * @throws ServletException
      */
     private void onSuccess(HttpServletRequest request, HttpServletResponse response, HttpSession session, RefreshableKeycloakSecurityContext context)
@@ -191,10 +195,10 @@ public class AIMSFilter extends KeycloakOIDCFilter
     /**
      * Get an alf_ticket using the JWT token from Keycloak
      *
-     * @param session
-     * @param username
-     * @param accessToken
-     * @return
+     * @param session HTTP Session
+     * @param username username
+     * @param accessToken access token
+     * @return The ALF ticket
      * @throws ConnectorServiceException
      * @throws JSONException
      */
