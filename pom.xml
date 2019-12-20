@@ -86,6 +86,8 @@
         <dependency.cxf.version>3.1.14</dependency.cxf.version>
     </properties>
 
+<!--     Test comment -->
+
    <scm>
      <connection>scm:git:https://github.com/Alfresco/share.git/</connection>
      <developerConnection>scm:git:https://github.com/Alfresco/share.git</developerConnection>
